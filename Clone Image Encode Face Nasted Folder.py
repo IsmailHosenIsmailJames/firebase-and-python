@@ -19,6 +19,8 @@ try: os.mkdir('img')
 except: print("No need to create folder: img")
 for doc in docs:
     info = doc.to_dict()
+    tag = info['tag']
+    if(tag != 'student'): continue
     name = info['name']
     roll = info['roll']
     reg = info['reg']
