@@ -1,4 +1,4 @@
-# Read all images and store in a folder. Folder name is ./img/
+# # Read all images and store in a folder. Folder name is ./img/
 import os
 import cv2
 import face_recognition
@@ -64,6 +64,10 @@ for shift in list_shift:
             for group in list_of_group:
                 list_of_image = os.listdir(f'{path}/{shift}/{deperment}/{semester}/{group}')
                 list_of_encoding = []
+                list_of_names = []
+                list_of_reg = []
+                list_of_roll = []
+                list_of_email = []
                 for Current_image_name in list_of_image:
                     working_path = f'{path}/{shift}/{deperment}/{semester}/{group}/{Current_image_name}'
                     Current_image_file = cv2.imread(working_path)
@@ -77,12 +81,26 @@ for shift in list_shift:
                         cause_error = True
                     else:
                         list_of_encoding.append(encode)
+                        tem = Current_image_name.split('_')
+                        list_of_roll.append(tem[0])
+                        list_of_reg.append(tem[1])
+                        list_of_names.append(tem[2])
+                        list_of_email.append(tem[3].split('.')[0]+'.'+'com')
                 savePath = f'face data/{shift}/{deperment}/{semester}/{group}/'
                 try: os.makedirs(savePath)
                 except : print("No need to create Folder:", savePath)
-                file = open(f'{savePath}/facedata.pkl', 'wb')
-                pickle.dump(file=file, obj=list_of_encoding)
-                file.close()
+                file_face = open(f'{savePath}/face data.pkl', 'wb')
+                pickle.dump(file=file_face, obj=list_of_encoding)
+                file_face.close()
+                file_roll = open(f'{savePath}/roll data.pkl', 'wb')
+                pickle.dump(file=file_roll, obj=list_of_roll)
+                file_roll.close()
+                file_reg = open(f'{savePath}/registation data.pkl', 'wb')
+                pickle.dump(file=file_reg, obj=list_of_reg)
+                file_reg.close()
+                file_names = open(f'{savePath}/names data.pkl', 'wb')
+                pickle.dump(file=file_names, obj=list_of_names)
+                file_names.close()
 # Done all task.
 if cause_error: print("Cause error. to cheak error please go to /error/ folder.")
 else: print("Successfull. No error cause.")
