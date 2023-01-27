@@ -1,4 +1,4 @@
-# # Read all images and store in a folder. Folder name is ./img/
+# Read all images and store in a folder. Folder name is ./img/
 import os
 import cv2
 import face_recognition
@@ -54,7 +54,8 @@ path = 'img data'
 try: os.mkdir(path)
 except: print("No need to create folder : img data/")
 list_shift = os.listdir(path)
-cause_error = False
+cause_error = 0
+report_ref = datab.collection(u'report')
 for shift in list_shift:
     list_deperment = os.listdir(f'{path}/{shift}')
     for deperment in list_deperment:
@@ -74,18 +75,24 @@ for shift in list_shift:
                     encode = face_recognition.face_encodings(Current_image_file)
                     if(len(encode) != 1):
                         error_path = working_path.replace('/', '_')
-                        try: os.mkdir('error')
+                        try: os.makedirs('error/double face in one img')
                         except: print("No need to create folder : error/", )
-                        cv2.imwrite(f"error/{error_path}", Current_image_file)
-                        print("Contain", len(encode) ,  "face in iamge: \n", working_path)
-                        cause_error = True
+                        cv2.imwrite(img=Current_image_file, filename=f"error/double face in one img/{error_path}")
+                        print("Contain", len(encode) ,  "face in iamge: \n"," "*5, working_path)
+                        cause_error +=1
+                        email = Current_image_name.split('_')[3][:-4]
+                        # send repoet to server
+                        report_ref.document(f'{email}').set({
+                            u'tag': "image",
+                            u'error': f'Contain {len(encode)} face in your image'
+                        }, merge=True)
                     else:
-                        list_of_encoding.append(encode)
+                        list_of_encoding.append(encode[0])
                         tem = Current_image_name.split('_')
                         list_of_roll.append(tem[0])
                         list_of_reg.append(tem[1])
                         list_of_names.append(tem[2])
-                        list_of_email.append(tem[3].split('.')[0]+'.'+'com')
+                        list_of_email.append((tem[3])[:-4])
                 savePath = f'face data/{shift}/{deperment}/{semester}/{group}/'
                 try: os.makedirs(savePath)
                 except : print("No need to create Folder:", savePath)
@@ -101,6 +108,10 @@ for shift in list_shift:
                 file_names = open(f'{savePath}/names data.pkl', 'wb')
                 pickle.dump(file=file_names, obj=list_of_names)
                 file_names.close()
+                file_emails = open(f'{savePath}/emails data.pkl', 'wb')
+                pickle.dump(file=file_emails, obj=list_of_email)
+                file_emails.close()
+
 # Done all task.
-if cause_error: print("Cause error. to cheak error please go to /error/ folder.")
+if cause_error: print("Cause ", cause_error," error. to cheak error please go to folder:  /error/.")
 else: print("Successfull. No error cause.")
