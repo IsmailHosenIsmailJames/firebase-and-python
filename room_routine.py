@@ -1,6 +1,6 @@
 json = {
     311 : {
-        "Thu" : [
+        "Fri" : [
             {
                 "start_time": 0,
                 "end_time" : 10000,

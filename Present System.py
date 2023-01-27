@@ -96,7 +96,7 @@ with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence
                 end_time = subject['end_time']
                 # load all data
                 if(start_time <= minutes <= end_time):
-                    present_file_path = f"present data/{now[0]}_{now[2]}_{now[1]}_{now[4]}/{subject['shift']}/{subject['deperment']}/{subject['semester']}/{subject['group']}/"
+                    present_file_path = f"present data/{now[4]}_{now[1]}_{now[2]}_{now[0]}/{subject['shift']}/{subject['deperment']}/{subject['semester']}/{subject['group']}/"
                     try: os.makedirs(present_file_path)
                     except: None
                     face, names, roll, reg , emails = load_data(subject=subject)
@@ -134,8 +134,11 @@ with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence
                                     index = compare_result.index(min(compare_result))
                                     print(names[index], roll[index], reg[index])
 
-                                    present_file = open(f"{present_file_path}/{subject['teacher']}_{subject['subject']}_{subject['subject_code']}.pkl", 'rb')
-                                    try: lst = pickle.load(file=present_file)
+                                    
+                                    try:
+                                        present_file = open(f"{present_file_path}/{subject['teacher']}_{subject['subject']}_{subject['subject_code']}_{now[4]}_{now[1]}_{now[2]}_{now[0]}.pkl", 'rb') 
+                                        lst = pickle.load(file=present_file)
+                                        present_file.close()
                                     except:  lst = []
                                     for i in lst:
                                         if names[index] in i:
@@ -143,11 +146,10 @@ with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence
                                             break
                                     else:
                                         lst.append(f'{names[index]}_{roll[index]}_{reg[index]}_{now[3]}')
-                                        present_file_w = open(f"{present_file_path}/{subject['teacher']}_{subject['subject']}_{subject['subject_code']}.pkl", 'w+b')
+                                        present_file_w = open(f"{present_file_path}/{subject['teacher']}_{subject['subject']}_{subject['subject_code']}_{now[4]}_{now[1]}_{now[2]}_{now[0]}.pkl", 'w+b')
                                         pickle.dump(file=present_file_w, obj= lst)
                                         present_file_w.close()
                                         print("successfully taken present")
-                                    present_file.close()                                    
 
                                 elif(same_face > 1):
                                     error = f"Cause error: Find same face encodings.\nError in : {subject['shift']}/{subject['deperment'].lower()}/semester {subject['semester']}\nPlease cheak this problem"

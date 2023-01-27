@@ -12,7 +12,7 @@ cd = credentials.Certificate("tpi-student-database-15c14-firebase-adminsdk-fkfla
 firebase_admin.initialize_app(cd)
 datab = firestore.client()
 
-firebase_location_ref = datab.collection(u'present data')
+firebase_location_ref = datab.collection(u'present file')
 error = []
 
 def uploade():
@@ -27,8 +27,7 @@ def uploade():
                             try:
                                 file_ = open(file_path, 'rb')
                                 list_of_present = load(file=file_)
-                                file_.close()
-                                firebase_doc_ref = firebase_location_ref.document(file[:-4])
+                                firebase_doc_ref = firebase_location_ref.document(f'{date}_{shift}_{deperment}_{semester}_{group}_{file}')
                                 firebase_doc_ref.set({
                                     "list" : list_of_present
                                 })
@@ -36,9 +35,10 @@ def uploade():
                                 try: makedirs(Uploaded_present_file_path)
                                 except: print("No need to create Folder :\n", " "*5, Uploaded_present_file_path)
                                 remove(path=file_path)
-                                Uploaded_present_file = open(Uploaded_present_file_path, 'wb')
-                                dump(file= Uploaded_present_file, obj=list_of_present)
+                                Uploaded_present_file = open(f'{Uploaded_present_file_path}/{file}', 'wb')
+                                dump(file=Uploaded_present_file, obj= list_of_present)
                                 Uploaded_present_file.close()
+                                file_.close()
                                 print("Successfully Uploaded file:", " "*5, file_path)
                             except Exception:
                                 error.append((file_path, Exception.mro()))
