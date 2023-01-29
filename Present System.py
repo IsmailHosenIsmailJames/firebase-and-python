@@ -81,7 +81,7 @@ def load_data(subject:dict):
 camera_311 = cv2.VideoCapture(0)
 
 json = room_routine.routine()
-with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence= 1.5) as face_detection:
+with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence= 0.5) as face_detection:
     while (camera_311.isOpened()):
         now = time.ctime().split(' ')
         minutes = now[3].split(':')
